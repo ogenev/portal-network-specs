@@ -1,0 +1,524 @@
+[
+  {
+    "name": "portal_stateRoutingTableInfo",
+    "summary": "Returns meta information about state network routing table.",
+    "params": [],
+    "result": {
+      "name": "stateTableInfoResult",
+      "description": "State network routing table information",
+      "required": true,
+      "schema": {
+        "title": "overlayTableInfoResults",
+        "description": "Routing table details",
+        "type": "object",
+        "required": [
+          "localNodeId",
+          "buckets"
+        ],
+        "properties": {
+          "localNodeId": {
+            "title": "nodeId",
+            "description": "The key identifying the local peer that owns the routing table.",
+            "$ref": "#/components/schemas/bytes32"
+          },
+          "buckets": {
+            "title": "kBucketsTable",
+            "description": "Represents a Kademlia routing table.",
+            "$ref": "#/components/schemas/kBuckets"
+          }
+        }
+      }
+    }
+  },
+  {
+    "name": "portal_stateAddEnr",
+    "summary": "Write an ethereum node record to the routing table.",
+    "params": [
+      {
+        "name": "enr",
+        "required": true,
+        "schema": {
+          "title": "Ethereum node record",
+          "$ref": "#/components/schemas/Enr"
+        }
+      }
+    ],
+    "result": {
+      "name": "stateAddEnrResult",
+      "description": "Returns boolean if the node record has been successfully saved.",
+      "schema": {
+        "type": "boolean"
+      }
+    }
+  },
+  {
+    "name": "portal_stateGetEnr",
+    "summary": "Fetch the latest ENR associated with the given node ID",
+    "params": [
+      {
+        "name": "nodeId",
+        "required": true,
+        "schema": {
+          "title": "NodeId",
+          "$ref": "#/components/schemas/bytes32"
+        }
+      }
+    ],
+    "result": {
+      "name": "stateGetEnrResult",
+      "description": "Returns latest ENR associated with the given node ID.",
+      "schema": {
+        "title": "Ethereum node record",
+        "$ref": "#/components/schemas/Enr"
+      }
+    }
+  },
+  {
+    "name": "portal_stateDeleteEnr",
+    "summary": "Delete a Node ID from the routing table",
+    "params": [
+      {
+        "name": "nodeId",
+        "required": true,
+        "schema": {
+          "title": "NodeId",
+          "$ref": "#/components/schemas/bytes32"
+        }
+      }
+    ],
+    "result": {
+      "name": "statedeleteEnrResult",
+      "description": "Returns boolean upon successful deletion of the node record.",
+      "schema": {
+        "type": "boolean"
+      }
+    }
+  },
+  {
+    "name": "portal_stateLookupEnr",
+    "summary": "Fetch the ENR representation associated with the given Node ID and optional sequence number",
+    "params": [
+      {
+        "name": "nodeId",
+        "required": true,
+        "schema": {
+          "title": "NodeId",
+          "$ref": "#/components/schemas/bytes32"
+        }
+      },
+      {
+        "name": "enrSeq",
+        "schema": {
+          "type": "number"
+        }
+      }
+    ],
+    "result": {
+      "name": "stateLookupEnrResult",
+      "description": "Returns ENR associated with the given node ID",
+      "schema": {
+        "title": "Ethereum node record",
+        "$ref": "#/components/schemas/Enr"
+      }
+    }
+  },
+  {
+    "name": "portal_stateSendPing",
+    "summary": "Send a PING message to the specified node",
+    "params": [
+      {
+        "name": "enr",
+        "required": true,
+        "schema": {
+          "title": "Ethereum node record",
+          "$ref": "#/components/schemas/Enr"
+        }
+      },
+      {
+        "name": "payload",
+        "description": "Custom payload data",
+        "schema": {
+          "$ref": "#/components/schemas/hexString"
+        }
+      }
+    ],
+    "result": {
+      "name": "stateSendPingResult",
+      "description": "Returns request-id element of message-data",
+      "schema": {
+        "title": "requestId",
+        "type": "object",
+        "required": [
+          "requestId"
+        ],
+        "properties": {
+          "requestId": {
+            "description": "Hex encoded RLP byte array of length <= 8 bytes",
+            "$ref": "#/components/schemas/bytes8"
+          }
+        }
+      }
+    }
+  },
+  {
+    "name": "portal_stateSendPong",
+    "summary": "Send a PONG message to the specified node",
+    "params": [
+      {
+        "name": "enr",
+        "required": true,
+        "schema": {
+          "title": "Ethereum node record",
+          "$ref": "#/components/schemas/Enr"
+        }
+      },
+      {
+        "name": "requestId",
+        "description": "request-id element of message-data",
+        "required": true,
+        "schema": {
+          "title": "Hex encoded RLP byte array of length <= 8 bytes",
+          "$ref": "#/components/schemas/bytes8"
+        }
+      },
+      {
+        "name": "payload",
+        "description": "Custom payload data",
+        "schema": {
+          "$ref": "#/components/schemas/hexString"
+        }
+      }
+    ],
+    "result": {
+      "name": "stateSendPongResult",
+      "description": "Returns \"true\" upon success.",
+      "schema": {
+        "type": "boolean"
+      }
+    }
+  },
+  {
+    "name": "portal_stateSendFindNodes",
+    "summary": "Send a FINDNODES request to a peer, to search within the given set of distances",
+    "params": [
+      {
+        "name": "enr",
+        "required": true,
+        "schema": {
+          "title": "Ethereum node record",
+          "$ref": "#/components/schemas/Enr"
+        }
+      },
+      {
+        "name": "distances",
+        "required": true,
+        "schema": {
+          "title": "distance",
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        }
+      }
+    ],
+    "result": {
+      "name": "stateSendFindNodesResult",
+      "description": "Returns the request-id assigned to the request message-data",
+      "schema": {
+        "title": "request-id",
+        "$ref": "#/components/schemas/bytes8"
+      }
+    }
+  },
+  {
+    "name": "portal_stateSendNodes",
+    "summary": "Respond to a specific FINDNODES request with a NODES response.",
+    "params": [
+      {
+        "name": "enr",
+        "required": true,
+        "schema": {
+          "title": "Ethereum node record",
+          "$ref": "#/components/schemas/Enr"
+        }
+      },
+      {
+        "name": "nodes",
+        "required": true,
+        "schema": {
+          "title": "nodes",
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Enr"
+          }
+        }
+      },
+      {
+        "name": "requestId",
+        "description": "request-id element of message-data",
+        "required": true,
+        "schema": {
+          "description": "Hex encoded RLP byte array of length <= 8 bytes",
+          "$ref": "#/components/schemas/bytes8"
+        }
+      }
+    ],
+    "result": {
+      "name": "stateSendNodesResult",
+      "description": "Returns the number of batches in which the given ENRs were divided and transmitted",
+      "schema": {
+        "title": "number of batches",
+        "type": "number"
+      }
+    }
+  },
+  {
+    "name": "portal_statePing",
+    "summary": "Send a PING message to the designated node and wait for a PONG response.",
+    "params": [
+      {
+        "name": "enr",
+        "required": true,
+        "schema": {
+          "title": "Ethereum node record",
+          "$ref": "#/components/schemas/Enr"
+        }
+      },
+      {
+        "name": "payload",
+        "description": "Custom payload data",
+        "schema": {
+          "$ref": "#/components/schemas/hexString"
+        }
+      }
+    ],
+    "result": {
+      "name": "statePingResult",
+      "description": "Returns PONG response",
+      "schema": {
+        "title": "PONG message",
+        "type": "object",
+        "required": [
+          "enrSeq",
+          "recipientIP",
+          "recipientPort"
+        ],
+        "properties": {
+          "enrSeq": {
+            "description": "ENR sequence number of sender",
+            "type": "number"
+          },
+          "recipientIP": {
+            "description": "IP address of the intended recipient",
+            "$ref": "#/components/schemas/ipAddr"
+          },
+          "recipientPort": {
+            "description": "recipient UDP port",
+            "$ref": "#/components/schemas/udpPort"
+          },
+          "payload": {
+            "description": "Custom payload data",
+            "$ref": "#/components/schemas/hexString"
+          }
+        }
+      }
+    }
+  },
+  {
+    "name": "portal_stateFindNodes",
+    "summary": "Send a FINDNODES request for nodes that fall within the given set of distances, to the designated peer and wait for a response.",
+    "params": [
+      {
+        "name": "enr",
+        "required": true,
+        "schema": {
+          "title": "Ethereum node record",
+          "$ref": "#/components/schemas/Enr"
+        }
+      },
+      {
+        "name": "distances",
+        "required": true,
+        "schema": {
+          "title": "distance",
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        }
+      }
+    ],
+    "result": {
+      "name": "stateFindNodesResult",
+      "description": "Returns nodes in a given distance",
+      "schema": {
+        "title": "NODES message",
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Enr"
+        }
+      }
+    }
+  },
+  {
+    "name": "portal_stateRecursiveFindNodes",
+    "summary": "Lookup a target node within in the network",
+    "params": [
+      {
+        "name": "nodeId",
+        "required": true,
+        "schema": {
+          "title": "NodeId",
+          "$ref": "#/components/schemas/bytes32"
+        }
+      }
+    ],
+    "result": {
+      "name": "stateRecursiveFindNodesResult",
+      "schema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Enr"
+        }
+      }
+    }
+  },
+  {
+    "name": "portal_stateFindContent",
+    "summary": "Send FINDCONTENT message to get the content with a content key.",
+    "params": [
+      {
+        "name": "contentKey",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/hexString"
+        }
+      }
+    ],
+    "result": {
+      "name": "stateFindContentResult",
+      "description": "Returns CONTENT message with a content or, in case the recipient does not have the data, a list of ENR records of nodes that are closer than the recipient is to the requested content.",
+      "schema": {
+        "title": "CONTENT message",
+        "type": "object",
+        "properties": {
+          "connectionId": {
+            "description": "uTP connection ID",
+            "schema": {
+              "type": "number"
+            }
+          },
+          "content": {
+            "description": "Requested content",
+            "$ref": "#/components/schemas/hexString"
+          },
+          "enrs": {
+            "description": "list of ENR records of nodes that are closer than the recipient is to the requested content",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Enr"
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "name": "portal_stateContent",
+    "summary": "Send CONTENT message. This message can contain either a uTP connection ID, a list of ENRs or the requested content.",
+    "params": [
+      {
+        "name": "connectionId",
+        "description": "uTP connection ID",
+        "schema": {
+          "type": "number"
+        }
+      },
+      {
+        "name": "content",
+        "description": "Content data",
+        "schema": {
+          "$ref": "#/components/schemas/hexString"
+        }
+      },
+      {
+        "name": "enrs",
+        "description": "List of ENR records of nodes.",
+        "schema": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Enr"
+          }
+        }
+      }
+    ],
+    "result": {
+      "name": "stateContentResult",
+      "description": "Returns \"true\" upon success",
+      "schema": {
+        "type": "boolean"
+      }
+    }
+  },
+  {
+    "name": "portal_stateOffer",
+    "summary": "Request message to offer a set of content_keys that this node has content available for.",
+    "params": [
+      {
+        "name": "contentKeys",
+        "description": "A list of encoded content_key entries",
+        "schema": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/hexString"
+          }
+        }
+      }
+    ],
+    "result": {
+      "name": "stateOfferResult",
+      "description": "Returns ACCEPT message",
+      "schema": {
+        "title": "ACCEPT message",
+        "type": "object",
+        "properties": {
+          "connectionId": {
+            "description": "Connection ID to set up a uTP stream to transmit the requested data",
+            "$ref": "#/components/schemas/bytes2"
+          },
+          "contentKeys": {
+            "description": "Signals which content keys are desired",
+            "$ref": "#/components/schemas/hexString"
+          }
+        }
+      }
+    }
+  },
+  {
+    "name": "portal_stateAccept",
+    "summary": "Signals interest in receiving the offered data from the corresponding Offer message.",
+    "params": [
+      {
+        "name": "connectionId",
+        "description": "Connection ID to set up a uTP stream to transmit the requested data",
+        "schema": {
+          "$ref": "#/components/schemas/bytes2"
+        }
+      },
+      {
+        "name": "contentKeys",
+        "description": "Signals which content keys are desired",
+        "schema": {
+          "$ref": "#/components/schemas/hexString"
+        }
+      }
+    ],
+    "result": {
+      "name": "stateAcceptResult",
+      "description": "Returns \"true\" upon successful uTP stream initialization",
+      "schema": {
+        "type": "boolean"
+      }
+    }
+  }
+]

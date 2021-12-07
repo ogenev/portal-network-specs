@@ -1,4 +1,9 @@
 {
+  "bytes2": {
+    "title": "2 hex encoded bytes",
+    "type": "string",
+    "pattern": "^0x[0-9a-f]{4}$"
+  },
   "bytes4": {
     "title": "4 hex encoded bytes",
     "type": "string",
@@ -30,8 +35,8 @@
     "pattern": "^0x[0-9a-f]$"
   },
   "uint": {
-		"title": "hex encoded unsigned integer",
-		"type": "string",
-		"pattern": "^0x[1-9a-f]+[0-9a-f]*$"
-	}
+    "title": "hex encoded unsigned integer",
+    "type": "string",
+    "pattern": "^0x[1-9a-f]+[0-9a-f]*$"
+  }
 }
