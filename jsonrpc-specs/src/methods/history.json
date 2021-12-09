@@ -8,25 +8,7 @@
       "description": "history network routing table information",
       "required": true,
       "schema": {
-        "title": "overlayTableInfoResults",
-        "description": "Routing table details",
-        "type": "object",
-        "required": [
-          "localNodeId",
-          "buckets"
-        ],
-        "properties": {
-          "localNodeId": {
-            "title": "nodeId",
-            "description": "The key identifying the local peer that owns the routing table.",
-            "$ref": "#/components/schemas/bytes32"
-          },
-          "buckets": {
-            "title": "kBucketsTable",
-            "description": "Represents a Kademlia routing table.",
-            "$ref": "#/components/schemas/kBuckets"
-          }
-        }
+        "$ref": "#/components/schemas/routingTableInfoResult"
       }
     }
   },
@@ -146,17 +128,7 @@
       "name": "historySendPingResult",
       "description": "Returns request-id element of message-data",
       "schema": {
-        "title": "requestId",
-        "type": "object",
-        "required": [
-          "requestId"
-        ],
-        "properties": {
-          "requestId": {
-            "description": "Hex encoded RLP byte array of length <= 8 bytes",
-            "$ref": "#/components/schemas/bytes8"
-          }
-        }
+        "$ref": "#/components/schemas/sendPingResult"
       }
     }
   },
@@ -296,31 +268,7 @@
       "name": "historyPingResult",
       "description": "Returns PONG response",
       "schema": {
-        "title": "PONG message",
-        "type": "object",
-        "required": [
-          "enrSeq",
-          "recipientIP",
-          "recipientPort"
-        ],
-        "properties": {
-          "enrSeq": {
-            "description": "ENR sequence number of sender",
-            "type": "number"
-          },
-          "recipientIP": {
-            "description": "IP address of the intended recipient",
-            "$ref": "#/components/schemas/ipAddr"
-          },
-          "recipientPort": {
-            "description": "recipient UDP port",
-            "$ref": "#/components/schemas/udpPort"
-          },
-          "payload": {
-            "description": "Custom payload data",
-            "$ref": "#/components/schemas/hexString"
-          }
-        }
+        "$ref": "#/components/schemas/pingResult"
       }
     }
   },
@@ -399,27 +347,7 @@
       "name": "historyFindContentResult",
       "description": "Returns CONTENT message with a content or, in case the recipient does not have the data, a list of ENR records of nodes that are closer than the recipient is to the requested content.",
       "schema": {
-        "title": "CONTENT message",
-        "type": "object",
-        "properties": {
-          "connectionId": {
-            "description": "uTP connection ID",
-            "schema": {
-              "type": "number"
-            }
-          },
-          "content": {
-            "description": "Requested content",
-            "$ref": "#/components/schemas/hexString"
-          },
-          "enrs": {
-            "description": "list of ENR records of nodes that are closer than the recipient is to the requested content",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Enr"
-            }
-          }
-        }
+        "$ref": "#/components/schemas/findContentResult"
       }
     }
   },
@@ -479,18 +407,7 @@
       "name": "historyOfferResult",
       "description": "Returns ACCEPT message",
       "schema": {
-        "title": "ACCEPT message",
-        "type": "object",
-        "properties": {
-          "connectionId": {
-            "description": "Connection ID to set up a uTP stream to transmit the requested data",
-            "$ref": "#/components/schemas/bytes2"
-          },
-          "contentKeys": {
-            "description": "Signals which content keys are desired",
-            "$ref": "#/components/schemas/hexString"
-          }
-        }
+        "$ref": "#/components/schemas/offerResult"
       }
     }
   },
