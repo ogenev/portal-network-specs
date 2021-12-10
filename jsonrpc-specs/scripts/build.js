@@ -30,6 +30,19 @@ schemaFiles.forEach(file => {
   };
 });
 
+let content = {};
+let contentBase = "src/content/"
+let contentFiles = fs.readdirSync(contentBase);
+contentFiles.forEach(file => {
+  console.log(file);
+  let raw = fs.readFileSync(contentBase + file);
+  let parsed = JSON.parse(raw);
+  content = {
+    ...content,
+    ...parsed,
+  };
+});
+
 let spec = await dereferenceDocument({
   openrpc: "1.2.4",
   info: {
@@ -43,35 +56,7 @@ let spec = await dereferenceDocument({
   },
   methods: methods,
   components: {
+    contentDescriptors: content,
     schemas: schemas
   }
 })
-spec.components = {};
-
-function recursiveMerge(schema) {
-  schema = merger(schema);
-
-  if("items" in schema && "oneOf" in schema.items) {
-      schema.items.oneOf = recursiveMerge(schema.items.oneOf);
-  }
-  if("oneOf" in schema) {
-    for(var k=0; k < schema.oneOf.length; k++) {
-      schema.oneOf[k] = recursiveMerge(schema.oneOf[k]);
-    }
-  }
-  return schema;
-}
-
-// Merge instances of `allOf` in methods.
-for (var i=0; i < spec.methods.length; i++) {
-  for (var j=0; j < spec.methods[i].params.length; j++) {
-    spec.methods[i].params[j].schema = recursiveMerge(spec.methods[i].params[j].schema);
-  }
-  spec.methods[i].result.schema = recursiveMerge(spec.methods[i].result.schema);
-}
-
-let data = JSON.stringify(spec, null, '\t');
-fs.writeFileSync('openrpc.json', data);
-
-console.log();
-console.log("Build successful.");

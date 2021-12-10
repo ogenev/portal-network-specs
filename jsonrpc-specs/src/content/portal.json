@@ -1,0 +1,10 @@
+{
+  "Enr": {
+    "name": "enr",
+    "required": true,
+    "schema": {
+      "title": "Ethereum node record",
+      "$ref": "#/components/schemas/Enr"
+    }
+  }
+}
